@@ -12,8 +12,8 @@ app.use(express.json());
 const pool = new Pool({
    user: process.env.DB_USER || 'postgres',
    host: process.env.DB_HOST || 'localhost',
-   database: process.env.DB_NAME || 'tododb',
-   password: process.env.DB_PASSWORD || 'wrongpassword',
+   database: process.env.DB_NAME || 'mydb',
+   password: process.env.DB_PASSWORD || 'mypassmyuser',
    port: process.env.DB_PORT || 5432,
 });
 
