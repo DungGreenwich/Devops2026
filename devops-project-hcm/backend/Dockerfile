@@ -52,8 +52,14 @@ RUN npm install --production
 # Copy the built app code from the "builder" stage  
 COPY --from=builder /app ./src  
 
-# Expose the port the app listens on (check your app's code, e.g., 
-EXPOSE 3000  
+# Expose the port the app listens on
+EXPOSE 8080  
 
-# The command to run the application (check your package.json 'start' script)  
-CMD [ "npm", "start" ]  
+# Set working directory to /app/src for running server.js
+WORKDIR /app/src
+
+# Install curl for healthcheck
+RUN apk add --no-cache curl
+
+# The command to run the application
+CMD ["node", "server.js"]

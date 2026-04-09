@@ -40,21 +40,45 @@
 version: '3.8'
 
 services:
-  # STUDENT TODO: Define frontend service
   frontend:
     build: ./frontend
-    # TODO: Add ports, depends_on
+    ports:
+      - "3000:3000" # map localhost:3000 to container port 3000
+    depends_on:
+      backend:
+        condition: service_healthy # backend container must run and its healthcheck succeeded
 
-  # STUDENT TODO: Define backend service
   backend:
     build: ./backend
-    # TODO: Add ports, environment, depends_on, healthcheck
+    healthcheck: # Healthcheck: check if the backend is running by failing if request returns error status
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    ports:
+      - "8080:8080" # map localhost:8080 to container port 8080
+    environment:
+      DATABASE_URL: postgres://myuser:mypass@db:5432/mydb # environment containing user, pass, host (service name), port and db
+    depends_on:
+      db:
+        condition: service_healthy
 
-  # STUDENT TODO: Define postgres service
-  postgres:
+  db:
     image: postgres:15-alpine
-    # TODO: Add environment, ports, volumes, healthcheck
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypass
+    ports:
+      - "5432:5432" # map localhost 5432 with container 5432
+    volumes:
+      - db_data:/var/lib/postgresql/data   # Named volume used here for persist data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydb"] # run in a shell
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
-# STUDENT TODO: Define named volumes
 volumes:
-  postgres_data:
+  db_data:
