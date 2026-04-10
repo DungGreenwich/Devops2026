@@ -8,7 +8,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-// BUG #1: Wrong default password - doesn't match docker-compose!
+// Fix: Default pass now matches docker-compose
 const pool = new Pool({
    user: process.env.DB_USER || 'postgres',
    host: process.env.DB_HOST || 'localhost',
@@ -31,15 +31,14 @@ app.get('/api/todos', async (req, res) => {
    }
 });
 
-// BUG #2: Missing validation - will cause test to fail!
-// STUDENT TODO: Add validation to reject empty title
 app.post('/api/todos', async (req, res) => {
    try {
       const { title, completed = false } = req.body;
 
-      // STUDENT FIX: Add validation here!
-      // Hint: Check if title is empty or undefined
-      // Return 400 status with error message if invalid
+      // Fix: Return 400 status with error message if title is empty or undefined
+      if (title === undefined || title === "") {
+         return res.status(400).send("Title is empty");
+      }
 
       const result = await pool.query(
          'INSERT INTO todos(title, completed) VALUES($1, $2) RETURNING *',
@@ -51,19 +50,70 @@ app.post('/api/todos', async (req, res) => {
    }
 });
 
-// BUG #3: Missing DELETE endpoint - but test expects it!
-// STUDENT TODO: Implement DELETE /api/todos/:id endpoint
+// Fix: implemented the delete endpoint
+app.delete('/api/todos/:id', async (req, res) => {
+   const id = req.params.id;
 
-// BUG #4: Missing PUT endpoint for updating todos
-// STUDENT TODO: Implement PUT /api/todos/:id endpoint
+  try {
+    const result = await client.query(
+      "DELETE FROM todos WHERE id = $1 RETURNING *",
+      [id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Entry not found" });
+    }
+
+    res.json({
+      message: "Entry deleted",
+      user: result.rows[0]
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Fix: PUT endpoint (update todos)
+app.put("/api/todos/:id", async (req, res) => {
+  const id = req.params.id;
+  const { title, completed, created_at } = req.body;
+
+  // Validate input
+  if (!title || !completed || !created_at) {
+    return res.status(400).json({ error: "Title, completed and created_at required" });
+  }
+
+  try {
+    const result = await client.query(
+      "UPDATE todos SET title = $1, completed = $2, created_at = $3 WHERE id = $3 RETURNING *",
+      [title, completed, created_at, id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Entry not found" });
+    }
+
+    res.json({
+      message: "Todos updated",
+      user: result.rows[0],
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 
 const port = process.env.PORT || 8080;
 
-// BUG #5: Server starts even in test mode, causing port conflicts
-// STUDENT FIX: Only start server if NOT in test mode
-app.listen(port, () => {
-   console.log(`Backend running on port ${port}`);
-});
+// Fix: Only start server if NOT in test mode
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
 
-// BUG #6: App not exported - tests can't import it!
-// STUDENT FIX: Export the app module
+// Fix: App exported
+module.exports = app;
