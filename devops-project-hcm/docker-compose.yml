@@ -65,6 +65,7 @@ services:
       DB_NAME: mydb
       DB_PASS: mypass
       DB_PORT: 5432
+      NODE_ENV: development
     depends_on:
       db:
         condition: service_healthy
