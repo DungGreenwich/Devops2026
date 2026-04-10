@@ -20,7 +20,7 @@ jobs:
         image: postgres:14-alpine
         env:
           POSTGRES_HOST_AUTH_METHOD: trust
-          POSTGRES_USER: myuser  
+          POSTGRES_USER: postgres  
           POSTGRES_PASSWORD: mypass  
           POSTGRES_DB: mydb
         ports:  

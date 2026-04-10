@@ -48,6 +48,7 @@ app.post('/api/todos', async (req, res) => {
       res.status(201).json(result.rows[0]);
    } catch (err) {
       res.status(500).json({ error: err.message });
+      console.error(err);
    }
 });
 
