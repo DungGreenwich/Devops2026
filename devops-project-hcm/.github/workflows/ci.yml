@@ -44,11 +44,11 @@ jobs:
         - name: Run tests  
           run: npm test  
           env:
-            DBhost: localhost  
-            DBport: 5432  
-            DBuser: myuser  
-            DBpassword: mypass  
-            DBname: mydb
+            DB_HOST: localhost  
+            DB_PORT: 5432  
+            DB_USER: postgres  
+            DB_PASS: mypass  
+            DB_NAME: mydb
 
   deploy:
     name: Deploy to Server
