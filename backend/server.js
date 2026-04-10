@@ -38,7 +38,7 @@ app.post('/api/todos', async (req, res) => {
 
       // Fix: Return 400 status with error message if title is empty or undefined
       if (title === undefined || title.trim().length === 0) {
-         return res.status(400).send("Title is empty");
+         return res.status(400).send({ "error" : "Title is empty" });
       }
 
       const result = await pool.query(
@@ -81,11 +81,6 @@ app.delete('/api/todos/:id', async (req, res) => {
 app.put("/api/todos/:id", async (req, res) => {
   const id = req.params.id;
   const { title, completed, created_at } = req.body;
-
-  // Validate input
-  if (!title || !completed || !created_at) {
-    return res.status(400).json({ error: "Title, completed and created_at required" });
-  }
 
   try {
     const result = await pool.query(
