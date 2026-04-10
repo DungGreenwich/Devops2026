@@ -59,7 +59,12 @@ services:
     ports:
       - "8080:8080" # map localhost:8080 to container port 8080
     environment:
-      DATABASE_URL: postgres://myuser:mypass@db:5432/mydb # environment containing user, pass, host (service name), port and db
+      DB_URL: postgres://myuser:mypass@db:5432/mydb # environment containing user, pass, host (service name), port and db
+      DB_USER: postgres
+      DB_HOST: localhost
+      DB_NAME: mydb
+      DB_PASS: mypass
+      DB_PORT: 5432
     depends_on:
       db:
         condition: service_healthy
@@ -73,7 +78,8 @@ services:
     ports:
       - "5432:5432" # map localhost 5432 with container 5432
     volumes:
-      - db_data:/var/lib/postgresql/data   # Named volume used here for persist data
+      - postgres_data:/var/lib/postgresql/data   # Named volume used here for persist data
+      - ./database:/.docker-entrypoint-initdb.d  # take the database folder and mount it inside the container and run sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U myuser -d mydb"] # run in a shell
       timeout: 5s
@@ -81,4 +87,4 @@ services:
       start_period: 10s
 
 volumes:
-  db_data:
+  postgres_data:
