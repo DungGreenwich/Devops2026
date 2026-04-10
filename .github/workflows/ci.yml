@@ -52,7 +52,7 @@ jobs:
 
   deploy:
     name: Deploy to Server
-    runs_on: ubuntu_latest
+    runs-on: ubuntu_latest
     needs: build-and-test
     if: github.ref == 'refs/heads/main'
 
