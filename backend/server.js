@@ -84,7 +84,7 @@ app.put("/api/todos/:id", async (req, res) => {
 
   try {
     const result = await pool.query(
-      "UPDATE todos SET title = $1, completed = $2, created_at = $3 WHERE id = $3 RETURNING *",
+      "UPDATE todos SET title = $1, completed = $2, created_at = $3 WHERE id = $4 RETURNING *",
       [title, completed, created_at, id]
     );
 
