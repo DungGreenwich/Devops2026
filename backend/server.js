@@ -92,10 +92,7 @@ app.put("/api/todos/:id", async (req, res) => {
       return res.status(404).json({ error: "Entry not found" });
     }
 
-    res.json({
-      message: "Todos updated",
-      user: result.rows[0],
-    });
+    res.status(200).json({ title: title, completed: completed });
 
   } catch (err) {
     console.error(err);
