@@ -28,6 +28,7 @@ app.get('/api/todos', async (req, res) => {
       res.json(result.rows);
    } catch (err) {
       res.status(500).json({ error: err.message });
+      console.error(err);
    }
 });
 
