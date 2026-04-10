@@ -74,7 +74,7 @@ services:
     image: postgres:15-alpine
     environment:
       POSTGRES_DB: mydb
-      POSTGRES_USER: myuser
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mypass
     ports:
       - "5432:5432" # map localhost 5432 with container 5432
