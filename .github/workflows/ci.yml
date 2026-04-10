@@ -9,6 +9,10 @@ jobs:
   build-and-test:  
     name: Build & Test  
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
  
     # This starts a Postgres database *for this job*  
     services:  
@@ -32,7 +36,6 @@ jobs:
         # Step 2: Install our app's dependencies  
         - name: Install dependencies  
           run: npm ci
-          working-directory: backend
 
         # Step 3: Run the tests. We must provide the DB env vars!  
         - name: Run tests  
