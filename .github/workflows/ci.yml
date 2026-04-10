@@ -37,6 +37,13 @@ jobs:
         - name: Install dependencies  
           run: npm ci
 
+        - name: Create tables
+          run: psql -h localhost -U postgres -d mydb -f database.sql
+          working-directory: database
+      
+          env:
+            PGPASSWORD: mypass
+
         # Step 3: Run the tests. We must provide the DB env vars!  
         - name: Run tests  
           run: npm test  
