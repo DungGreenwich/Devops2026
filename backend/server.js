@@ -37,7 +37,7 @@ app.post('/api/todos', async (req, res) => {
       const { title, completed = false } = req.body;
 
       // Fix: Return 400 status with error message if title is empty or undefined
-      if (title === undefined || title === "") {
+      if (title === undefined || title.trim().length === 0) {
          return res.status(400).send("Title is empty");
       }
 
@@ -57,7 +57,7 @@ app.delete('/api/todos/:id', async (req, res) => {
    const id = req.params.id;
 
   try {
-    const result = await client.query(
+    const result = await pool.query(
       "DELETE FROM todos WHERE id = $1 RETURNING *",
       [id]
     );
@@ -88,7 +88,7 @@ app.put("/api/todos/:id", async (req, res) => {
   }
 
   try {
-    const result = await client.query(
+    const result = await pool.query(
       "UPDATE todos SET title = $1, completed = $2, created_at = $3 WHERE id = $3 RETURNING *",
       [title, completed, created_at, id]
     );
