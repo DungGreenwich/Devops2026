@@ -57,7 +57,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-      - name: Deploy to Server via SSH
+    - name: Deploy to Server via SSH
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }} 
