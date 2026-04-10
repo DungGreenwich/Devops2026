@@ -44,8 +44,27 @@ jobs:
         - name: Run tests  
           run: npm test  
           env:
-            DBhost: localhost  
-            DBport: 5432  
-            DBuser: myuser  
-            DBpassword: mypass  
-            DBname: mydb
+            DB_HOST: localhost  
+            DB_PORT: 5432  
+            DB_USER: postgres  
+            DB_PASS: mypass  
+            DB_NAME: mydb
+
+  deploy:
+    name: Deploy to Server
+    runs_on: ubuntu_latest
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Deploy to Server via SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }} 
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /var/www/Devops2026
+          git pull origin main
+          docker-compose pull
+          sudo docker-compose up -d
