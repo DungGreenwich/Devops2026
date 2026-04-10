@@ -29,19 +29,12 @@ jobs:
         - name: Checkout code  
           uses: actions/checkout@v3  
  
-        # Step 2: Install Node.js v18  
-        - name: Setup Node.js
-          uses: actions/setup-node@v3  
-          with:  
-            node-version: '18'  
-            cache: 'npm' # Caches npm packages for faster builds  
- 
-        # Step 3: Install our app's dependencies  
+        # Step 2: Install our app's dependencies  
         - name: Install dependencies  
-          run: npm install
+          run: npm ci
           working-directory: backend
 
-        # Step 4: Run the tests. We must provide the DB env vars!  
+        # Step 3: Run the tests. We must provide the DB env vars!  
         - name: Run tests  
           run: npm test  
           env:
