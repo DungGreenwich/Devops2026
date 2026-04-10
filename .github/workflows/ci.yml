@@ -31,7 +31,6 @@ jobs:
  
         # Step 2: Install Node.js v18  
         - name: Setup Node.js
-          working-directory: backend
           uses: actions/setup-node@v3  
           with:  
             node-version: '18'  
@@ -39,7 +38,8 @@ jobs:
  
         # Step 3: Install our app's dependencies  
         - name: Install dependencies  
-          run: npm install  
+          run: npm install
+          working-directory: backend
 
         # Step 4: Run the tests. We must provide the DB env vars!  
         - name: Run tests  
